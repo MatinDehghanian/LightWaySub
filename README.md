@@ -89,9 +89,10 @@ VITE_OFF_SECTIONS={"appsBox":true,"logoBox":true,"timeBox":true,"usageBox":true,
 #### Dark Theme
 1. **Download the dark theme template**
    ```sh
-   sudo wget -N -P /var/lib/marzban/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/download/v0.2.5.XX-dark/index.html
+   # Get the latest dark release URL automatically
+   DARK_URL=$(curl -s https://api.github.com/repos/MatinDehghanian/LightWaySub/releases | grep -E '"browser_download_url".*-dark.*index\.html"' | head -1 | cut -d '"' -f 4)
+   sudo wget -N -P /var/lib/marzban/templates/subscription/ "$DARK_URL"
    ```
-   *Replace XX with the latest build number from releases*
 
 2. **Run the following commands in your server terminal**
    ```sh
@@ -136,9 +137,10 @@ VITE_OFF_SECTIONS={"appsBox":true,"logoBox":true,"timeBox":true,"usageBox":true,
 #### Dark Theme
 1. **Download the dark theme template**
    ```sh
-   sudo wget -N -P /var/lib/marzneshin/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/download/v0.2.5.XX-dark/index.html
+   # Get the latest dark release URL automatically
+   DARK_URL=$(curl -s https://api.github.com/repos/MatinDehghanian/LightWaySub/releases | grep -E '"browser_download_url".*-dark.*index\.html"' | head -1 | cut -d '"' -f 4)
+   sudo wget -N -P /var/lib/marzneshin/templates/subscription/ "$DARK_URL"
    ```
-   *Replace XX with the latest build number from releases*
 
 2. **Run the following commands in your server terminal**
    ```sh
@@ -158,8 +160,108 @@ VITE_OFF_SECTIONS={"appsBox":true,"logoBox":true,"timeBox":true,"usageBox":true,
 
 ---
 
-## Template Updates
-To update the template, simply repeat step 1 of your chosen theme installation.
+## مراحل نصب
+
+### مرزبان
+
+#### قالب روشن
+۱. **قالب روشن را با دستور زیر دانلود کنید**
+   ```sh
+   sudo wget -N -P /var/lib/marzban/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/latest/download/index.html
+   ```
+
+۲. **دستورات زیر را در ترمینال سرورتان وارد کنید**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/"' | sudo tee -a /opt/marzban/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /opt/marzban/.env
+   ```
+   یا مقادیر زیر را در فایل `.env` در پوشه `/opt/marzban` با پاک کردن `#` اول آنها از حالت کامنت در بیارید.
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+۳. **ریستارت کردن مرزبان**
+   ```sh
+   marzban restart
+   ```
+
+#### قالب تیره
+۱. **قالب تیره را با دستور زیر دانلود کنید**
+   ```sh
+   # دریافت خودکار آخرین لینک قالب تیره
+   DARK_URL=$(curl -s https://api.github.com/repos/MatinDehghanian/LightWaySub/releases | grep -E '"browser_download_url".*-dark.*index\.html"' | head -1 | cut -d '"' -f 4)
+   sudo wget -N -P /var/lib/marzban/templates/subscription/ "$DARK_URL"
+   ```
+
+۲. **دستورات زیر را در ترمینال سرورتان وارد کنید**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/"' | sudo tee -a /opt/marzban/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /opt/marzban/.env
+   ```
+   یا مقادیر زیر را در فایل `.env` در پوشه `/opt/marzban` با پاک کردن `#` اول آنها از حالت کامنت در بیارید.
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+۳. **ریستارت کردن مرزبان**
+   ```sh
+   marzban restart
+   ```
+
+### مرزنشین
+
+#### قالب روشن
+۱. **قالب روشن را با دستور زیر دانلود کنید**
+   ```sh
+   sudo wget -N -P /var/lib/marzneshin/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/latest/download/index.html
+   ```
+
+۲. **دستورات زیر را در ترمینال سرورتان وارد کنید**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzneshin/templates/"' | sudo tee -a /etc/opt/marzneshin/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /etc/opt/marzneshin/.env
+   ```
+   یا مقادیر زیر را در فایل `.env` در پوشه `/etc/opt/marzneshin` با پاک کردن `#` اول آنها از حالت کامنت در بیارید.
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzneshin/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+۳. **ریستارت کردن مرزنشین**
+   ```sh
+   marzneshin restart
+   ```
+
+#### قالب تیره
+۱. **قالب تیره را با دستور زیر دانلود کنید**
+   ```sh
+   # دریافت خودکار آخرین لینک قالب تیره
+   DARK_URL=$(curl -s https://api.github.com/repos/MatinDehghanian/LightWaySub/releases | grep -E '"browser_download_url".*-dark.*index\.html"' | head -1 | cut -d '"' -f 4)
+   sudo wget -N -P /var/lib/marzneshin/templates/subscription/ "$DARK_URL"
+   ```
+
+۲. **دستورات زیر را در ترمینال سرورتان وارد کنید**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzneshin/templates/"' | sudo tee -a /etc/opt/marzneshin/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /etc/opt/marzneshin/.env
+   ```
+   یا مقادیر زیر را در فایل `.env` در پوشه `/etc/opt/marzneshin` با پاک کردن `#` اول آنها از حالت کامنت در بیارید.
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzneshin/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+۳. **ریستارت کردن مرزنشین**
+   ```sh
+   marzneshin restart
+   ```
+
+---
+
+## بروزرسانی قالب
+برای بروزرسانی تمپلیت فقط کافیست مرحله ۱ قالب مورد نظرتان را تکرار کنید.
 
 ## Powered by
 
