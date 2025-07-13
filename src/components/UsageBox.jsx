@@ -79,7 +79,9 @@ const UsageBox = ({ type, value, total, remaining }) => {
                   className={getProgressColor(value)}
                   stroke="currentColor"
                   strokeWidth="3"
-                  strokeDasharray={`${value}, 100`}
+                  strokeDasharray={`${
+                    value === Infinity || Number.isNaN(value) ? 100 : value
+                  }, 100`}
                   strokeLinecap="round"
                   fill="none"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -87,7 +89,9 @@ const UsageBox = ({ type, value, total, remaining }) => {
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-base sm:text-sm font-bold">
-                  {roundedValue}%
+                  {value === Infinity || Number.isNaN(value)
+                    ? "∞"
+                    : `${roundedValue}%`}
                 </span>
               </div>
             </div>

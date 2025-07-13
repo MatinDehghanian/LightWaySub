@@ -123,7 +123,7 @@ export const calculateUsedTimePercentage = (expireTimestamp) => {
 };
 
 export const formatTraffic = (bytes, t) => {
-  if (bytes === null) {
+  if (bytes === null || Number.isNaN(bytes) || bytes === Infinity) {
     return t("infinity");
   }
 
@@ -140,4 +140,44 @@ export const formatTraffic = (bytes, t) => {
     }
   }
   return `${(bytes / 1024 ** 4).toFixed(2)} ${t("TB")}`;
+};
+
+// Helper function to add days to a date
+const addDays = (date, days) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
+export const getStatus = (data, isMarzneshin, t) => {
+  if (isMarzneshin) {
+    if (data?.data_limit_reached || data?.expired || !data?.enabled)
+      return t("disabled");
+
+    if (data?.expire_strategy === "start_on_first_use" && !data?.online_at)
+      return t("on_hold");
+
+    const isNearToExpire =
+      (data?.used_traffic &&
+        data?.data_limit &&
+        data?.used_traffic / data?.data_limit > 0.9) ||
+      (data?.expire_at && new Date(data?.expire_at) < addDays(new Date(), -3));
+
+    return isNearToExpire ? t("nearToExpire") : t("active");
+  }
+
+  const isNearToExpire =
+    (data?.used_traffic &&
+      data?.data_limit &&
+      data?.used_traffic / data?.data_limit > 0.9) ||
+    (data?.expire_at && new Date(data?.expire_at) < addDays(new Date(), -3));
+
+  return isNearToExpire ? t("nearToExpire") : t(data?.status);
+};
+
+export const isMarzneshin = () => {
+  return (
+    new URL(window.location.href).pathname.split("/").filter(Boolean).length ===
+    3
+  );
 };

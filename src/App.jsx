@@ -21,14 +21,16 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [dataLinks, setDataLinks] = useState([]);
-
   useEffect(() => {
     GetInfoRequest.getInfo()
       .then((res) => {
         setData(res?.data);
+        console.log(res.data);
       })
       .finally(() => setLoading(false));
   }, []);
+
+
 
   useEffect(() => {
     if (data?.links) {
@@ -153,14 +155,23 @@ function App() {
                   {isOffSections.usageBox && (
                     <UsageBox
                       type="usage"
-                      value={Number(
-                        ((data?.used_traffic / data?.data_limit) * 100).toFixed(
-                          2
-                        )
-                      )}
-                      total={formatTraffic(data?.data_limit, t)}
+                      value={
+                        data?.data_limit === null || data?.data_limit === 0
+                          ? Infinity
+                          : Number(
+                              (
+                                (data?.used_traffic / data?.data_limit) *
+                                100
+                              ).toFixed(2)
+                            )
+                      }
+                      total={
+                        data?.data_limit === null || data?.data_limit === 0
+                          ? formatTraffic(null, t)
+                          : formatTraffic(data?.data_limit, t)
+                      }
                       remaining={
-                        data?.data_limit === null
+                        data?.data_limit === null || data?.data_limit === 0
                           ? formatTraffic(null, t)
                           : formatTraffic(
                               data?.data_limit - data?.used_traffic,
