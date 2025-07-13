@@ -5,15 +5,25 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  actions: read
+
 jobs:
   build:
     name: Build Project
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
 
     steps:
       # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       # Step 2: Set up Node.js
       - name: Setup Node.js
@@ -54,6 +64,8 @@ jobs:
           git push origin $DARK_TAG
           echo "light_tag=$LIGHT_TAG" >> $GITHUB_OUTPUT
           echo "dark_tag=$DARK_TAG" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Step 6: Generate release notes from commits
       - name: Generate release notes
