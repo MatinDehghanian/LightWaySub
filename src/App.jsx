@@ -55,6 +55,12 @@ function App() {
   }, [data]);
 
   const getAdjustedUrl = (subURL) => {
+    if (!subURL && !import.meta.env.VITE_PANEL_DOMAIN) {
+      return `${window.location.origin}${window.location.pathname}`;
+    }
+    if (!subURL && import.meta.env.VITE_PANEL_DOMAIN) {
+      return `${import.meta.env.VITE_PANEL_DOMAIN}${window.location.pathname}`;
+    }
     if (import.meta.env.VITE_PANEL_DOMAIN) {
       return subURL.replace(
         /https?:\/\/[^/]+/,
