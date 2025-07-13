@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:light && npm run build:dark",
     "build:light": "vite build --mode light",
     "build:dark": "vite build --mode dark",
     "lint": "eslint .",
