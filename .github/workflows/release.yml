@@ -1,0 +1,129 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: Build the project
+      - name: Build project
+        run: npm run build
+
+      # Step 4.5: Verify build output
+      - name: List build directory
+        run: |
+          ls -al build/
+          echo "Checking for build-light directory:"
+          ls -al build/build-light/ || echo "build-light directory not found"
+          echo "Checking for build-dark directory:"
+          ls -al build/build-dark/ || echo "build-dark directory not found"
+
+      # Step 5: Create and push version tags
+      - name: Create GitHub tags
+        id: create_tags
+        run: |
+          # Configure git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          LIGHT_TAG="v0.2.5.${{ github.run_number }}-light"
+          DARK_TAG="v0.2.5.${{ github.run_number }}-dark"
+          git tag $LIGHT_TAG
+          git tag $DARK_TAG
+          git push origin $LIGHT_TAG
+          git push origin $DARK_TAG
+          echo "light_tag=$LIGHT_TAG" >> $GITHUB_OUTPUT
+          echo "dark_tag=$DARK_TAG" >> $GITHUB_OUTPUT
+
+      # Step 6: Generate release notes from commits
+      - name: Generate release notes
+        id: generate_notes
+        run: |
+          # Fetch the commit messages since the last tag (using the dark tag as reference)
+          COMMITS=$(git log --oneline --since="1 week ago" --pretty=format:"- %s" || echo "- Initial release")
+          echo "commits<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # Step 7: Create Light Release
+      - name: Create Light Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/build-light/**
+          tag_name: ${{ steps.create_tags.outputs.light_tag }}
+          name: "LightWaySub Light v${{ steps.create_tags.outputs.light_tag }}"
+          body: |
+            ## Light Theme Version
+            
+            This is the light theme version of LightWaySub.
+            
+            ### Changes:
+            ${{ steps.generate_notes.outputs.commits }}
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 8: Create Dark Release (Latest)
+      - name: Create Dark Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/build-dark/**
+          tag_name: ${{ steps.create_tags.outputs.dark_tag }}
+          name: "LightWaySub Dark v${{ steps.create_tags.outputs.dark_tag }}"
+          body: |
+            ## Dark Theme Version (Latest)
+            
+            This is the dark theme version of LightWaySub and is set as the latest release.
+            
+            ### Changes:
+            ${{ steps.generate_notes.outputs.commits }}
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 9: Set Dark Release as Latest
+      - name: Set Dark Release as Latest
+        run: |
+          # Install jq for JSON parsing
+          sudo apt-get update && sudo apt-get install -y jq
+          
+          # Wait a moment to ensure the release is created
+          sleep 10
+          
+          # Get release ID for the dark release
+          RELEASE_ID=$(curl -s \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.create_tags.outputs.dark_tag }}" \
+            | jq -r '.id')
+          
+          echo "Release ID: $RELEASE_ID"
+          
+          # Update the release to be the latest
+          curl -s -X PATCH \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -d '{"make_latest": true}' \
+            "https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID"
+          
+          echo "Dark release set as latest"
