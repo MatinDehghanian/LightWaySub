@@ -60,6 +60,107 @@ VITE_OFF_SECTIONS={"appsBox":true,"logoBox":true,"timeBox":true,"usageBox":true,
 3. Deploy the generated `build-light/` or `build-dark/` directory
 4. The build includes an `index.php` file for PHP hosting
 
+## Installation Steps
+
+### For Marzban
+
+#### Light Theme
+1. **Download the light theme template**
+   ```sh
+   sudo wget -N -P /var/lib/marzban/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/latest/download/index.html
+   ```
+
+2. **Run the following commands in your server terminal**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/"' | sudo tee -a /opt/marzban/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /opt/marzban/.env
+   ```
+   Or add the following values to the `.env` file in `/opt/marzban` directory by removing the `#` at the beginning:
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+3. **Restart Marzban**
+   ```sh
+   marzban restart
+   ```
+
+#### Dark Theme
+1. **Download the dark theme template**
+   ```sh
+   sudo wget -N -P /var/lib/marzban/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/download/v0.2.5.XX-dark/index.html
+   ```
+   *Replace XX with the latest build number from releases*
+
+2. **Run the following commands in your server terminal**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/"' | sudo tee -a /opt/marzban/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /opt/marzban/.env
+   ```
+   Or add the following values to the `.env` file in `/opt/marzban` directory by removing the `#` at the beginning:
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzban/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+3. **Restart Marzban**
+   ```sh
+   marzban restart
+   ```
+
+### For Marzneshin
+
+#### Light Theme
+1. **Download the light theme template**
+   ```sh
+   sudo wget -N -P /var/lib/marzneshin/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/latest/download/index.html
+   ```
+
+2. **Run the following commands in your server terminal**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzneshin/templates/"' | sudo tee -a /etc/opt/marzneshin/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /etc/opt/marzneshin/.env
+   ```
+   Or add the following values to the `.env` file in `/etc/opt/marzneshin` directory by removing the `#` at the beginning:
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzneshin/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+3. **Restart Marzneshin**
+   ```sh
+   marzneshin restart
+   ```
+
+#### Dark Theme
+1. **Download the dark theme template**
+   ```sh
+   sudo wget -N -P /var/lib/marzneshin/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/download/v0.2.5.XX-dark/index.html
+   ```
+   *Replace XX with the latest build number from releases*
+
+2. **Run the following commands in your server terminal**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzneshin/templates/"' | sudo tee -a /etc/opt/marzneshin/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /etc/opt/marzneshin/.env
+   ```
+   Or add the following values to the `.env` file in `/etc/opt/marzneshin` directory by removing the `#` at the beginning:
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/marzneshin/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+3. **Restart Marzneshin**
+   ```sh
+   marzneshin restart
+   ```
+
+---
+
+## Template Updates
+To update the template, simply repeat step 1 of your chosen theme installation.
+
 ## Powered by
 
 - [React](https://reactjs.org/)
