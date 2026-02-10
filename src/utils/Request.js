@@ -7,8 +7,15 @@ import { toast } from "react-toastify";
  * @prop {boolean} toastSuccess
  */
 
+// Simple in-memory cache for API responses
+const cache = new Map();
+const CACHE_TTL = 60000; // 1 minute cache
+
 export default class Request {
-  static axiosInstance = Axios.create({});
+  static axiosInstance = Axios.create({
+    // Shorter timeout for faster failure detection on slow networks
+    timeout: 15000,
+  });
 
   /**
    *
@@ -20,12 +27,28 @@ export default class Request {
    * @returns {Promise<AxiosResponse<any>>}
    */
   static async send(url, method = "GET", config = {}, utils = undefined) {
+    // Check cache for GET requests
+    if (method === "GET") {
+      const cached = cache.get(url);
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        return cached.response;
+      }
+    }
+
     const request = this.axiosInstance.request({
       url,
       method,
       ...config,
     });
-    return this.handleRequest(request, utils);
+    
+    const response = await this.handleRequest(request, utils);
+    
+    // Cache successful GET responses
+    if (method === "GET" && response) {
+      cache.set(url, { response, timestamp: Date.now() });
+    }
+    
+    return response;
   }
 
   /**
@@ -41,7 +64,11 @@ export default class Request {
     } catch (e) {
       if (!e.response) {
         if (utils?.toastError) {
-          toast.error("در اتصال به سرور خطایی رخ داده است.");
+          // More helpful message for slow connection issues
+          const message = e.code === 'ECONNABORTED' 
+            ? "اتصال به سرور کند است. لطفا صبر کنید..."
+            : "در اتصال به سرور خطایی رخ داده است.";
+          toast.error(message);
         }
         return;
       }

@@ -15,8 +15,13 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [
-      react(),
-      viteSingleFile(),
+      react({
+        // Use automatic JSX runtime for smaller bundle
+        jsxRuntime: 'automatic',
+      }),
+      viteSingleFile({
+        removeViteModuleLoader: true,
+      }),
       {
         name: "generate-index-php",
         apply: "build",
@@ -37,14 +42,33 @@ export default defineConfig(({ mode }) => {
         compress: {
           drop_console: true,
           drop_debugger: true,
+          dead_code: true,
+          unused: true,
+          passes: 2,
+        },
+        mangle: {
+          toplevel: true,
+        },
+        format: {
+          comments: false,
         },
       },
+      // Report compressed size
+      reportCompressedSize: true,
+      // Chunk size warning limit
+      chunkSizeWarningLimit: 500,
     },
     optimizeDeps: {
-      include: ["react", "react-dom", "lucide-react"],
+      include: ["react", "react-dom"],
     },
     define: {
       __THEME_MODE__: JSON.stringify(mode),
+    },
+    // Optimize server for dev
+    server: {
+      warmup: {
+        clientFiles: ["./src/main.jsx", "./src/App.jsx"],
+      },
     },
   };
 });

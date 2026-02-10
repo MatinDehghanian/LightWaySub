@@ -1,6 +1,4 @@
 import { useState, useMemo, useEffect, Suspense, lazy } from "react";
-import { Helmet } from "react-helmet";
-import { ClipLoader } from "react-spinners";
 import { ToastContainer } from "react-toastify";
 
 // Lazy load components for better performance
@@ -9,6 +7,8 @@ const UsageBox = lazy(() => import("./components/UsageBox"));
 const Apps = lazy(() => import("./components/Apps"));
 const Configs = lazy(() => import("./components/Configs"));
 
+// Import lightweight loading skeleton
+import LoadingSkeleton from "./components/LoadingSkeleton";
 import GetInfoRequest from "./utils/GetInfoRequest";
 import {
   calculateRemainingTime,
@@ -30,8 +30,6 @@ function App() {
       .finally(() => setLoading(false));
   }, []);
 
-
-
   useEffect(() => {
     if (data?.links) {
       const links =
@@ -50,7 +48,7 @@ function App() {
         setDataLinks(
           configArray[configArray.length - 1] === "False"
             ? configArray.slice(0, -1)
-            : configArray
+            : configArray,
         );
       });
     }
@@ -66,7 +64,7 @@ function App() {
     if (import.meta.env.VITE_PANEL_DOMAIN) {
       return subURL.replace(
         /https?:\/\/[^/]+/,
-        import.meta.env.VITE_PANEL_DOMAIN
+        import.meta.env.VITE_PANEL_DOMAIN,
       );
     } else if (subURL?.includes("https://")) {
       return subURL;
@@ -74,10 +72,6 @@ function App() {
 
     return `${window.location.origin}${subURL}`;
   };
-
-  const title = data?.username
-    ? `${data.username} Sub Info`
-    : `Lightway Sub Info`;
 
   const isOffSections = useMemo(() => {
     try {
@@ -108,42 +102,26 @@ function App() {
     }
   }, []);
 
+  // Update document title dynamically (lightweight alternative to react-helmet)
+  useEffect(() => {
+    const title = data?.username
+      ? `${data.username} Sub Info`
+      : `Lightway Sub Info`;
+    document.title = title;
+  }, [data?.username]);
+
   return (
     <div
       className="min-h-screen bg-background text-foreground transition-colors duration-200 text-base sm:text-base"
       dir="rtl"
     >
-      <Helmet>
-        <title>{title}</title>
-        <meta
-          name="description"
-          content="Powered by https://github.com/MatinDehghanian"
-        />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-        />
-      </Helmet>
-
       <div className="container mx-auto px-3 sm:px-6 py-3 sm:py-8">
         <div className="mx-auto max-w-2xl">
           {loading ? (
-            <div className="flex h-96 items-center justify-center">
-              <ClipLoader
-                size={60}
-                color="hsl(var(--primary))"
-                loading={loading}
-              />
-            </div>
+            <LoadingSkeleton />
           ) : (
             data && (
-              <Suspense
-                fallback={
-                  <div className="flex h-96 items-center justify-center">
-                    <ClipLoader size={40} color="hsl(var(--primary))" />
-                  </div>
-                }
-              >
+              <Suspense fallback={<LoadingSkeleton />}>
                 <div className="space-y-5 sm:space-y-6">
                   {isOffSections.userBox && (
                     <UserBox
@@ -162,7 +140,7 @@ function App() {
                               (
                                 (data?.used_traffic / data?.data_limit) *
                                 100
-                              ).toFixed(2)
+                              ).toFixed(2),
                             )
                       }
                       total={
@@ -175,7 +153,7 @@ function App() {
                           ? formatTraffic(null, t)
                           : formatTraffic(
                               data?.data_limit - data?.used_traffic,
-                              t
+                              t,
                             )
                       }
                     />
@@ -185,11 +163,11 @@ function App() {
                     <UsageBox
                       type="time"
                       value={calculateUsedTimePercentage(
-                        data?.expire || data?.expire_date
+                        data?.expire || data?.expire_date,
                       )}
                       remaining={calculateRemainingTime(
                         data?.expire || data?.expire_date,
-                        t
+                        t,
                       )}
                     />
                   )}

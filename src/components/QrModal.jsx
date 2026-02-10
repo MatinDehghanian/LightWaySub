@@ -1,10 +1,20 @@
+import { lazy, Suspense } from "react";
 import PropTypes from "prop-types";
-import QRCode from "react-qr-code";
 import { handleCopyToClipboard } from "../utils/Helper";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Copy } from "lucide-react";
 import { t } from "../utils/translations";
+
+// Lazy load QR code component - it's heavy (~15KB) and only needed when modal opens
+const QRCode = lazy(() => import("react-qr-code").then(module => ({ default: module.default })));
+
+// Simple QR loading placeholder
+const QRSkeleton = () => (
+  <div className="w-48 h-48 bg-muted/30 rounded animate-pulse flex items-center justify-center">
+    <div className="w-32 h-32 border-2 border-muted rounded" />
+  </div>
+);
 
 const QrModal = ({ open, handleClose, title, link }) => {
   return (
@@ -18,14 +28,18 @@ const QrModal = ({ open, handleClose, title, link }) => {
 
         <div className="flex flex-col items-center space-y-4">
           <div className="p-4 border rounded-lg bg-background">
-            <QRCode
-              value={link}
-              cursor="pointer"
-              bgColor="transparent"
-              fgColor="currentColor"
-              className="w-48 h-48"
-              onClick={() => handleCopyToClipboard(link)}
-            />
+            {open && (
+              <Suspense fallback={<QRSkeleton />}>
+                <QRCode
+                  value={link}
+                  cursor="pointer"
+                  bgColor="transparent"
+                  fgColor="currentColor"
+                  className="w-48 h-48"
+                  onClick={() => handleCopyToClipboard(link)}
+                />
+              </Suspense>
+            )}
           </div>
 
           <Button

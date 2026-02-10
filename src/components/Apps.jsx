@@ -48,9 +48,11 @@ const AppCard = ({ app, t, subLink, onTutorialOpen }) => {
               src={app.logo}
               alt={`${app.name} logo`}
               className="w-9 h-9 sm:w-8 sm:h-8 rounded-lg object-contain"
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "https://via.placeholder.com/32x32?text=App";
+                e.target.style.display = "none";
               }}
             />
             <div>
