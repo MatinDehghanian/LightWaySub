@@ -9,7 +9,13 @@ export function generateIndexPHP(buildDir) {
     // Read the generated index.html file
     const htmlContent = fs.readFileSync(htmlFile, "utf-8");
 
-    // PHP Template with embedded HTML content
+    // Remove the Jinja2 template script block (will be replaced with PHP version)
+    const htmlWithoutJinja = htmlContent.replace(
+      /<!-- Jinja2 embedded initial data[\s\S]*?<\/script>/,
+      "<!-- PHP_INITIAL_DATA_PLACEHOLDER -->",
+    );
+
+    // PHP Template with embedded HTML content and server-side data fetching
     const phpTemplate = `<?php
 
     // Ensure the HTTP_USER_AGENT is set; if not, redirect to the home page
@@ -27,7 +33,79 @@ export function generateIndexPHP(buildDir) {
     define('BASE_URL', 'https://yourdomain.com:443'); // Set the appropriate URL
     
     // Generate the full URL with the request URI
-    $requestUrl = BASE_URL . ($_SERVER['REQUEST_URI'] ?? '') . ($isHtmlRequest ? '/info' : '');
+    $infoUrl = BASE_URL . ($_SERVER['REQUEST_URI'] ?? '') . '/info';
+    $subUrl = BASE_URL . ($_SERVER['REQUEST_URI'] ?? '');
+    
+    // For HTML requests, fetch user data and embed it for instant loading
+    if ($isHtmlRequest) {
+        // Fetch user info
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $infoUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_USERAGENT => $_SERVER['HTTP_USER_AGENT'],
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ]);
+        
+        $infoResponse = curl_exec($ch);
+        $userData = null;
+        
+        if ($infoResponse !== false) {
+            $userData = json_decode($infoResponse, true);
+        }
+        curl_close($ch);
+        
+        // Fetch subscription links
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $subUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_USERAGENT => 'V2rayNG',
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ]);
+        
+        $linksResponse = curl_exec($ch);
+        $links = [];
+        
+        if ($linksResponse !== false) {
+            // Try to decode base64, otherwise split by newlines
+            $decoded = @base64_decode($linksResponse, true);
+            $linksText = ($decoded !== false && preg_match('/^(vmess|vless|trojan|ss):\\/\\//', $decoded)) 
+                ? $decoded 
+                : $linksResponse;
+            $links = array_filter(explode("\\n", trim($linksText)), function($line) {
+                return !empty($line) && $line !== 'False';
+            });
+        }
+        curl_close($ch);
+        
+        // Build the initial data script
+        $initialDataScript = '<script>
+try {
+    window.__INITIAL_DATA__ = {
+        user: ' . ($userData ? json_encode($userData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : 'null') . ',
+        links: ' . json_encode(array_values($links), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . '
+    };
+} catch (e) {
+    console.warn("Failed to parse initial data:", e);
+    window.__INITIAL_DATA__ = null;
+}
+</script>';
+        
+        // Output HTML with embedded initial data
+        $html = str_replace(
+            '<!-- PHP_INITIAL_DATA_PLACEHOLDER -->',
+            $initialDataScript,
+            '${htmlWithoutJinja.replace(/'/g, "\\'").replace(/\n/g, "\\n")}'
+        );
+        echo $html;
+        return;
+    }
+    
+    // For non-HTML requests (subscription clients), proxy the request
+    $requestUrl = $subUrl;
     
     // Initialize cURL session
     $ch = curl_init();
@@ -56,17 +134,6 @@ export function generateIndexPHP(buildDir) {
     $headerText = substr($response, 0, $headerEndPos);
     $responseBody = substr($response, $headerEndPos + 4);
     
-    // Serve HTML content if requested
-    if ($isHtmlRequest) {
-        ?>
-        ${htmlContent.replace(
-          /<\?(php|=)/g,
-          "<\\?$1"
-        )} <!-- Escaped PHP tags for safety -->
-        <?php
-        return;
-    }
-    
     // Forward the necessary headers from the cURL response
     $isValidHeader = false;
     foreach (explode("\\r\\n", $headerText) as $i => $line) {
@@ -86,6 +153,7 @@ export function generateIndexPHP(buildDir) {
     
     // Output the response body
     echo $responseBody;
+    curl_close($ch);
     
     ?>
     `;

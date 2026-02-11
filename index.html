@@ -22,6 +22,39 @@
   </head>
   <body>
     <div id="root"></div>
+    
+    <!-- Jinja2 embedded initial data - loads instantly without network request -->
+    <script>
+      try {
+        window.__INITIAL_DATA__ = {
+          user: {% if user %}{{ {
+            'id': user.id,
+            'username': user.username,
+            'status': user.status.name if user.status else 'active',
+            'used_traffic': user.used_traffic,
+            'lifetime_used_traffic': user.lifetime_used_traffic,
+            'data_limit': user.data_limit,
+            'data_limit_reset_strategy': user.data_limit_reset_strategy.name if user.data_limit_reset_strategy else 'no_reset',
+            'expire': user.expire.timestamp() if user.expire else None,
+            'expire_date': user.expire.timestamp() if user.expire else None,
+            'on_hold_expire_duration': user.on_hold_expire_duration,
+            'on_hold_timeout': user.on_hold_timeout.timestamp() if user.on_hold_timeout else None,
+            'created_at': user.created_at.timestamp() if user.created_at else None,
+            'online_at': user.online_at.timestamp() if user.online_at else None,
+            'is_active': user.status.name == 'active' if user.status else True,
+            'enabled': user.status.name != 'disabled' if user.status else True,
+            'expired': user.status.name == 'expired' if user.status else False,
+            'data_limit_reached': user.status.name == 'limited' if user.status else False,
+            'subscription_url': user.subscription_url if user.subscription_url else None
+          } | tojson | safe }}{% else %}null{% endif %},
+          links: {{ links | tojson | safe if links else '[]' }}
+        };
+      } catch (e) {
+        console.warn('Failed to parse initial data:', e);
+        window.__INITIAL_DATA__ = null;
+      }
+    </script>
+    
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
