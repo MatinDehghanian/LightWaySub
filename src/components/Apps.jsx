@@ -12,6 +12,7 @@ import {
   Code,
   X,
   Plus,
+  Airplay,
 } from "lucide-react";
 import { t } from "../utils/translations";
 import osData from "../assets/os.json";
@@ -21,6 +22,7 @@ const getOsIcon = (osName) => {
     Windows: <Monitor className="h-6 w-6 sm:h-6 sm:w-6" />,
     Android: <Smartphone className="h-6 w-6 sm:h-6 sm:w-6" />,
     iOS: <Apple className="h-6 w-6 sm:h-6 sm:w-6" />,
+    macOS: <Airplay className="h-6 w-6 sm:h-6 sm:w-6" />,
     Linux: <Code className="h-6 w-6 sm:h-6 sm:w-6" />,
     default: <X className="h-6 w-6 sm:h-6 sm:w-6" />,
   };
