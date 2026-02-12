@@ -158,6 +158,54 @@ VITE_OFF_SECTIONS={"appsBox":true,"logoBox":true,"timeBox":true,"usageBox":true,
    marzneshin restart
    ```
 
+### For Pasarguard
+
+#### Light Theme
+1. **Download the light theme template**
+   ```sh
+   sudo wget -N -P /var/lib/pasarguard/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/latest/download/index.html
+   ```
+
+2. **Run the following commands in your server terminal**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"' | sudo tee -a /opt/pasarguard/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /opt/pasarguard/.env
+   ```
+   Or add the following values to the `.env` file in `/opt/pasarguard` directory by removing the `#` at the beginning:
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+3. **Restart Pasarguard**
+   ```sh
+   pasarguard restart
+   ```
+
+#### Dark Theme
+1. **Download the dark theme template**
+   ```sh
+   # Get the latest dark release URL automatically
+   DARK_URL=$(curl -s https://api.github.com/repos/MatinDehghanian/LightWaySub/releases | grep -E '"browser_download_url".*-dark.*index\.html"' | head -1 | cut -d '"' -f 4)
+   sudo wget -N -P /var/lib/pasarguard/templates/subscription/ "$DARK_URL"
+   ```
+
+2. **Run the following commands in your server terminal**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"' | sudo tee -a /opt/pasarguard/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /opt/pasarguard/.env
+   ```
+   Or add the following values to the `.env` file in `/opt/pasarguard` directory by removing the `#` at the beginning:
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+3. **Restart Pasarguard**
+   ```sh
+   pasarguard restart
+   ```
+
 ---
 
 ## مراحل نصب
@@ -256,6 +304,54 @@ VITE_OFF_SECTIONS={"appsBox":true,"logoBox":true,"timeBox":true,"usageBox":true,
 ۳. **ریستارت کردن مرزنشین**
    ```sh
    marzneshin restart
+   ```
+
+### پاسارگارد
+
+#### قالب روشن
+۱. **قالب روشن را با دستور زیر دانلود کنید**
+   ```sh
+   sudo wget -N -P /var/lib/pasarguard/templates/subscription/ https://github.com/MatinDehghanian/LightWaySub/releases/latest/download/index.html
+   ```
+
+۲. **دستورات زیر را در ترمینال سرورتان وارد کنید**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"' | sudo tee -a /opt/pasarguard/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /opt/pasarguard/.env
+   ```
+   یا مقادیر زیر را در فایل `.env` در پوشه `/opt/pasarguard` با پاک کردن `#` اول آنها از حالت کامنت در بیارید.
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+۳. **ریستارت کردن پاسارگارد**
+   ```sh
+   pasarguard restart
+   ```
+
+#### قالب تیره
+۱. **قالب تیره را با دستور زیر دانلود کنید**
+   ```sh
+   # دریافت خودکار آخرین لینک قالب تیره
+   DARK_URL=$(curl -s https://api.github.com/repos/MatinDehghanian/LightWaySub/releases | grep -E '"browser_download_url".*-dark.*index\.html"' | head -1 | cut -d '"' -f 4)
+   sudo wget -N -P /var/lib/pasarguard/templates/subscription/ "$DARK_URL"
+   ```
+
+۲. **دستورات زیر را در ترمینال سرورتان وارد کنید**
+   ```sh
+   echo 'CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"' | sudo tee -a /opt/pasarguard/.env
+   echo 'SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"' | sudo tee -a /opt/pasarguard/.env
+   ```
+   یا مقادیر زیر را در فایل `.env` در پوشه `/opt/pasarguard` با پاک کردن `#` اول آنها از حالت کامنت در بیارید.
+   ```
+   CUSTOM_TEMPLATES_DIRECTORY="/var/lib/pasarguard/templates/"
+   SUBSCRIPTION_PAGE_TEMPLATE="subscription/index.html"
+   ```
+
+۳. **ریستارت کردن پاسارگارد**
+   ```sh
+   pasarguard restart
    ```
 
 ---
