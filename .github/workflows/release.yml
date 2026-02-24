@@ -38,6 +38,8 @@ jobs:
       # Step 4: Build the project
       - name: Build project
         run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Step 4.5: Verify build output
       - name: List build directory

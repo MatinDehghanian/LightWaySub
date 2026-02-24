@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/resolve-github-releases.js",
     "build": "npm run build:light && npm run build:dark",
     "build:light": "vite build --mode light",
     "build:dark": "vite build --mode dark",

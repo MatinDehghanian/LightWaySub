@@ -15,7 +15,7 @@ import {
   Airplay,
 } from "lucide-react";
 import { t } from "../utils/translations";
-import osData from "../assets/os.json";
+import osData from "../assets/os-resolved.json";
 
 const getOsIcon = (osName) => {
   const icons = {
@@ -69,15 +69,15 @@ const AppCard = ({ app, t, subLink, onTutorialOpen }) => {
                 app?.price === "0"
                   ? "bg-green-100 text-green-800 hover:bg-green-200 text-sm sm:text-sm"
                   : app?.isAd
-                  ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 text-sm sm:text-sm"
-                  : "bg-blue-100 text-blue-800 hover:bg-blue-200 text-sm sm:text-sm"
+                    ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 text-sm sm:text-sm"
+                    : "bg-blue-100 text-blue-800 hover:bg-blue-200 text-sm sm:text-sm"
               }
             >
               {app.price === "0"
                 ? t("free")
                 : app?.isAd
-                ? t("ad")
-                : `${app.price} $`}
+                  ? t("ad")
+                  : `${app.price} $`}
             </Button>
             <ChevronDown
               className={`h-5 w-5 transition-transform ${
@@ -105,16 +105,44 @@ const AppCard = ({ app, t, subLink, onTutorialOpen }) => {
               </Button>
             )}
 
+            {app.resolvedDownloadLinks?.length > 0 &&
+              !app?.isAd &&
+              app.resolvedDownloadLinks.map((item, i) => (
+                <Button
+                  key={i}
+                  variant="outline"
+                  className="w-full py-3 sm:py-3 text-base sm:text-base"
+                  disabled={!item.url}
+                  onClick={() => item.url && window.open(item.url, "_blank")}
+                >
+                  <Download className="h-5 w-5 me-2" />
+                  <span>
+                    {t("download")}
+                    {item.label ? ` (${item.label})` : ""}
+                  </span>
+                  {item.version && (
+                    <span className="text-xs ms-2 opacity-60">
+                      {item.version}
+                    </span>
+                  )}
+                </Button>
+              ))}
+
             {app.configLink && (
-              <a
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full py-3 sm:py-3 text-base sm:text-base"
-                href={app.configLink.replace("{url}", subLink)}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Button
+                asChild
+                variant="outline"
+                className="w-full py-3 sm:py-3 text-base sm:text-base"
               >
-                <Plus className="h-5 w-5 me-2" />
-                {t("configuration")}
-              </a>
+                <a
+                  href={app.configLink.replace("{url}", subLink)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Plus className="h-5 w-5 me-2" />
+                  {t("configuration")}
+                </a>
+              </Button>
             )}
 
             {app.name === "Shadowrocket" && (
@@ -154,9 +182,11 @@ AppCard.propTypes = {
     price: PropTypes.string,
     isAd: PropTypes.bool,
     downloadLink: PropTypes.string,
+    resolvedDownloadLinks: PropTypes.array,
     configLink: PropTypes.string,
     adBtnText: PropTypes.string,
     tutorialSteps: PropTypes.array,
+    githubReleases: PropTypes.array,
   }).isRequired,
   t: PropTypes.func.isRequired,
   subLink: PropTypes.string,

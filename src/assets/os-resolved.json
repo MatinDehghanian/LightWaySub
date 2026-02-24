@@ -45,10 +45,11 @@
           "description": "A V2Ray client for Android devices.",
           "faDescription": "V2rayNG یک کلاینت V2Ray برای دستگاه‌های اندرویدی است.",
           "configLink": "v2rayng://install-config?url={url}",
-          "githubReleases": [
+          "resolvedDownloadLinks": [
             {
-              "repo": "2dust/v2rayNG",
-              "assetPattern": "_universal\\.apk$"
+              "url": "https://github.com/2dust/v2rayNG/releases/download/1.10.32/v2rayNG_1.10.32_universal.apk",
+              "label": null,
+              "version": "1.10.32"
             }
           ]
         },
@@ -74,16 +75,16 @@
           "logo": "https://raw.githubusercontent.com/MatinDehghanian/public-assets/refs/heads/main/icons/v2rayN.png",
           "description": "A GUI client for Windows, Linux and macOS",
           "faDescription": "V2rayN یک کلاینت گرافیکی برای ویندوز، لینوکس و مک است.",
-          "githubReleases": [
+          "resolvedDownloadLinks": [
             {
-              "repo": "2dust/v2rayN",
-              "assetPattern": "^v2rayN-windows-64\\.zip$",
-              "label": "x64"
+              "url": "https://github.com/2dust/v2rayN/releases/download/7.18.0/v2rayN-windows-64.zip",
+              "label": "x64",
+              "version": "7.18.0"
             },
             {
-              "repo": "2dust/v2rayN",
-              "assetPattern": "^v2rayN-windows-64-desktop\\.zip$",
-              "label": "x64 Desktop"
+              "url": "https://github.com/2dust/v2rayN/releases/download/7.18.0/v2rayN-windows-64-desktop.zip",
+              "label": "x64 Desktop",
+              "version": "7.18.0"
             }
           ]
         }
@@ -117,16 +118,16 @@
           "logo": "https://raw.githubusercontent.com/MatinDehghanian/public-assets/refs/heads/main/icons/v2rayN.png",
           "description": "A GUI client for Windows, Linux and macOS",
           "faDescription": "V2rayN یک کلاینت گرافیکی برای ویندوز، لینوکس و مک است.",
-          "githubReleases": [
+          "resolvedDownloadLinks": [
             {
-              "repo": "2dust/v2rayN",
-              "assetPattern": "^v2rayN-macos-64\\.dmg$",
-              "label": "Intel (x64)"
+              "url": "https://github.com/2dust/v2rayN/releases/download/7.18.0/v2rayN-macos-64.dmg",
+              "label": "Intel (x64)",
+              "version": "7.18.0"
             },
             {
-              "repo": "2dust/v2rayN",
-              "assetPattern": "^v2rayN-macos-arm64\\.dmg$",
-              "label": "ARM64 (M Series)"
+              "url": "https://github.com/2dust/v2rayN/releases/download/7.18.0/v2rayN-macos-arm64.dmg",
+              "label": "ARM64 (M Series)",
+              "version": "7.18.0"
             }
           ]
         }
@@ -143,10 +144,11 @@
           "logo": "https://raw.githubusercontent.com/MatinDehghanian/public-assets/refs/heads/main/icons/v2rayN.png",
           "description": "A GUI client for Windows, Linux and macOS",
           "faDescription": "V2rayN یک کلاینت گرافیکی برای ویندوز، لینوکس و مک است.",
-          "githubReleases": [
+          "resolvedDownloadLinks": [
             {
-              "repo": "2dust/v2rayN",
-              "assetPattern": "^v2rayN-linux-64\\.deb$"
+              "url": "https://github.com/2dust/v2rayN/releases/download/7.18.0/v2rayN-linux-64.deb",
+              "label": null,
+              "version": "7.18.0"
             }
           ]
         }
