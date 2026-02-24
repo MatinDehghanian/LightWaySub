@@ -69,7 +69,7 @@ const Configs = ({ title, configs, isFirst }) => {
                       handleOpen(title, filteredLinks?.[index], index);
                     }}
                   >
-                    <span className="font-medium truncate flex-1 me-3 sm:me-3 text-base sm:text-base">
+                    <span className="font-medium truncate flex-1 me-3 sm:me-3 text-xs sm:text-xs">
                       {title}
                     </span>
                     <div className="flex gap-2 sm:gap-2">

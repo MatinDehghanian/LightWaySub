@@ -85,7 +85,7 @@ const UserBox = ({ data, subLink }) => {
             {/* User Info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-4 sm:mb-4">
-                <h3 className="text-xl sm:text-lg font-medium text-foreground truncate">
+                <h3 className="text-sm sm:text-sm font-medium text-foreground truncate">
                   {data?.username}
                 </h3>
                 <Button
