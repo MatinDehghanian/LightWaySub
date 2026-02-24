@@ -57,28 +57,26 @@ const AppCard = ({ app, t, subLink, onTutorialOpen }) => {
                 e.target.style.display = "none";
               }}
             />
-            <div>
-              <h3 className="font-medium text-base sm:text-base">{app.name}</h3>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-medium text-sm sm:text-base truncate">{app.name}</h3>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className={
+          <div className="flex items-center gap-2 shrink-0">
+            <span
+              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium border ${
                 app?.price === "0"
-                  ? "bg-green-100 text-green-800 hover:bg-green-200 text-sm sm:text-sm"
+                  ? "bg-green-100 text-green-800 border-green-200"
                   : app?.isAd
-                    ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 text-sm sm:text-sm"
-                    : "bg-blue-100 text-blue-800 hover:bg-blue-200 text-sm sm:text-sm"
-              }
+                    ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                    : "bg-blue-100 text-blue-800 border-blue-200"
+              }`}
             >
               {app.price === "0"
                 ? t("free")
                 : app?.isAd
                   ? t("ad")
                   : `${app.price} $`}
-            </Button>
+            </span>
             <ChevronDown
               className={`h-5 w-5 transition-transform ${
                 isExpanded ? "rotate-180" : ""
@@ -97,11 +95,11 @@ const AppCard = ({ app, t, subLink, onTutorialOpen }) => {
             {app.downloadLink && !app?.isAd && (
               <Button
                 variant="outline"
-                className="w-full py-3 sm:py-3 text-base sm:text-base"
+                className="w-full py-3 sm:py-3 justify-start"
                 onClick={() => window.open(app.downloadLink, "_blank")}
               >
-                <Download className="h-5 w-5 me-2" />
-                {t("download")}
+                <Download className="h-5 w-5 shrink-0 me-2" />
+                <span className="text-sm sm:text-base truncate">{t("download")}</span>
               </Button>
             )}
 
@@ -111,20 +109,20 @@ const AppCard = ({ app, t, subLink, onTutorialOpen }) => {
                 <Button
                   key={i}
                   variant="outline"
-                  className="w-full py-3 sm:py-3 text-base sm:text-base"
+                  className="w-full py-3 sm:py-3 justify-start"
                   disabled={!item.url}
                   onClick={() => item.url && window.open(item.url, "_blank")}
                 >
-                  <Download className="h-5 w-5 me-2" />
-                  <span>
-                    {t("download")}
-                    {item.label ? ` (${item.label})` : ""}
-                  </span>
-                  {item.version && (
-                    <span className="text-xs ms-2 opacity-60">
-                      {item.version}
+                  <Download className="h-5 w-5 shrink-0 me-2" />
+                  <span className="flex flex-col items-start min-w-0">
+                    <span className="text-sm sm:text-base truncate">
+                      {t("download")}
+                      {item.label ? ` (${item.label})` : ""}
                     </span>
-                  )}
+                    {item.version && (
+                      <span className="text-xs opacity-60">{item.version}</span>
+                    )}
+                  </span>
                 </Button>
               ))}
 
